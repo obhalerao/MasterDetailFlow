@@ -2,21 +2,29 @@ package trap1.bhaleraoomkar.masterdetailflow;
 
 import android.app.Activity;
 import android.os.Bundle;
+
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import android.webkit.WebViewClient;
+import android.webkit.WebView;
+import android.webkit.WebResourceRequest;
+
 import trap1.bhaleraoomkar.masterdetailflow.dummy.DummyContent;
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
- * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
+ * This fragment is either contained in a {@link WebsiteListActivity}
+ * in two-pane mode (on tablets) or a {@link WebsiteDetailActivity}
  * on handsets.
  */
-public class ItemDetailFragment extends Fragment {
+public class WebsiteDetailFragment extends Fragment {
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -32,7 +40,7 @@ public class ItemDetailFragment extends Fragment {
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public ItemDetailFragment() {
+    public WebsiteDetailFragment() {
     }
 
     @Override
@@ -48,19 +56,33 @@ public class ItemDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle(mItem.content);
+                appBarLayout.setTitle(mItem.website_name);
             }
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.item_detail, container, false);
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(
+                R.layout.website_detail, container, false);
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.details);
+            ((WebView) rootView.findViewById(R.id.website_detail))
+                    .loadUrl(mItem.website_url);
+            WebView webView = (WebView)
+                    rootView.findViewById(R.id.website_detail);
+            webView.setWebViewClient(new WebViewClient(){
+                @Override
+                public boolean shouldOverrideUrlLoading(
+                        WebView view, WebResourceRequest request) {
+                    return super.shouldOverrideUrlLoading(
+                            view, request);
+                }
+            });
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.loadUrl(mItem.website_url);
         }
 
         return rootView;
